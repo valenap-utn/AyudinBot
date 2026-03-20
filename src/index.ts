@@ -22,5 +22,5 @@ setupEvents(client);
 // Conectar el cliente a la API de Discord
 client.login(DISCORD_TOKEN).catch(console.error);
 
-// (Opcional) Registrar comandos al iniciar
+// Registrar comandos al iniciar
 registerCommands().catch(console.error);
