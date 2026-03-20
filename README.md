@@ -28,7 +28,9 @@ AyudinBot/
 ├── src/
 │   ├── bot/
 │   │   ├── commands/
-│   │   │   ├── preguntar.ts
+│   │   │   ├── public/
+│   │   │   │   └── preguntar.ts
+│   │   │   │
 │   │   │   └── admin/
 │   │   │       ├── configurarRol.ts
 │   │   │       ├── configurarCanal.ts
@@ -106,10 +108,10 @@ AyudinBot/
 
 ### 🟡 Fase 2 — Gestión de contenido (EN PROGRESO)
 
-* [ ] `/ingresar-pdf`
-* [ ] Almacenamiento de PDFs
-* [ ] Registro de documentos en base de datos
-* [ ] Asociación de documentos por servidor
+* [x] `/ingresar-pdf`
+* [x] Almacenamiento de PDFs
+* [x] Registro de documentos en base de datos
+* [x] Asociación de documentos por servidor
 
 ---
 
@@ -135,15 +137,6 @@ AyudinBot/
 * [ ] Mensajes enriquecidos
 * [ ] Logs y monitoreo
 * [ ] Manejo de errores robusto
-
----
-
-## 🧪 Próximos pasos sugeridos
-
-* Implementar `/ingresar-pdf`
-* Diseñar modelo `Document` en Prisma
-* Evaluar almacenamiento (local vs S3)
-* Empezar con parsing de PDFs
 
 ---
 
