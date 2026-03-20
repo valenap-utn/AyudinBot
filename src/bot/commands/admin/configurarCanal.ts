@@ -33,7 +33,7 @@ export const configurarCanalCommand = {
                 return;
             }
 
-            if (!isAdmin(interaction)) {
+            if (!(await isAdmin(interaction))) {
                 await interaction.reply({
                     content: "No tienes permisos de administrador.",
                     ephemeral: true,
