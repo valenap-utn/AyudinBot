@@ -1,0 +1,41 @@
+{
+  "name": "ayudinbot",
+  "version": "1.0.0",
+  "description": "Bot de Discord con IA que ayuda a estudiantes a encontrar información en materiales de la materia, guiándolos hacia dónde buscar respuestas a sus dudas",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/valenap-utn/AyudinBot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/valenap-utn/AyudinBot/issues"
+  },
+  "homepage": "https://github.com/valenap-utn/AyudinBot#readme",
+  "dependencies": {
+    "@discordjs/rest": "^2.6.0",
+    "@prisma/adapter-better-sqlite3": "^7.5.0",
+    "@prisma/client": "^7.5.0",
+    "discord-api-types": "^0.38.42",
+    "discord.js": "^14.25.1",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^25.5.0",
+    "dotenv": "^17.3.1",
+    "nodemon": "^3.1.14",
+    "prisma": "^7.5.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
