@@ -1,10 +1,11 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { getGuildConfig } from '../../../backend/services/guildService';
-import { saveDocument } from '../../../backend/services/pdfService';
+import {saveDocument, updateDocumentContent} from '../../../backend/services/pdfService';
 import * as fs from 'fs';
 import { randomUUID } from 'crypto';
 import { Buffer } from 'buffer';
 import { isAdmin } from "../../../utils/permissions/permissions";
+import {extractTextFromPdf} from "../../../backend/services/pdfParserService";
 
 export const subirPdfCommand = {
     data: new SlashCommandBuilder()
@@ -76,6 +77,14 @@ export const subirPdfCommand = {
             path,
             uploadedByUserId: user.id,
         });
+
+        // Extraer texto de PDF y actualizar el contenido del documento
+        try {
+            const extractedText = await extractTextFromPdf(path);
+            await updateDocumentContent(document.id, extractedText);
+        } catch (error) {
+            console.error(`Error al extraer texto del PDF ${document.id}:`, error);
+        }
 
         // Responder
         await interaction.reply({ content: `El archivo **${document.originalName}** se ha subido correctamente.`, ephemeral: true });

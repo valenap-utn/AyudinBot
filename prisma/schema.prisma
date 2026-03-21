@@ -29,4 +29,5 @@ model Document {
   path                  String    // Ruta donde se almacena
   uploadedAt            DateTime  @default(now())
   uploadedByUserId      String
+  content               String? // Guarda texto extraido del pdf
 }

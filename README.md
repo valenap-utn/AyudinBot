@@ -111,7 +111,7 @@ AyudinBot/
 
 ## 🛣️ Roadmap
 
-### 🟢 Fase 1 — Base del bot (COMPLETADA)
+### 🟢 Fase 1 — Base del bot
 
 * [x] Conexión a Discord
 * [x] Slash commands
@@ -120,7 +120,7 @@ AyudinBot/
 
 ---
 
-### 🟡 Fase 2 — Gestión de contenido (EN PROGRESO)
+### 🟡 Fase 2 — Gestión de contenido
 
 * [x] `/subir-pdf`
 * [x] Almacenamiento de PDFs
@@ -131,7 +131,7 @@ AyudinBot/
 
 ### 🟠 Fase 3 — Procesamiento de información
 
-* [ ] Extracción de texto de PDFs
+* [x] Extracción de texto de PDFs
 * [ ] Indexación de contenido
 * [ ] Búsqueda por relevancia
 

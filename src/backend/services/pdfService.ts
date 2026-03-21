@@ -68,3 +68,35 @@ export const deleteDocumentByName = async (
 
     return "deleted"; // Eliminación exitosa
 };
+
+// Actualiza el contenido de un Documento en la base de datos
+export const updateDocumentContent = async (documentId: string, content: string) => {
+    try {
+        return await prisma.document.update({
+            where: { id: documentId },
+            data: { content },
+        });
+    } catch (error) {
+        console.error(`Error al actualizar contenido del documento con ID ${documentId}`, error);
+        throw error;
+    }
+};
+
+// Busca documentos por contenido textual en base al guildId
+export const searchDocumentsByContent = async (guildId: string, searchTerm: string) => {
+    return prisma.document.findMany({
+        where: {
+            guildId,
+            content: {
+                contains: searchTerm,
+            },
+        },
+        select: {
+            originalName: true,
+        },
+        take: 10,
+        orderBy: {
+            uploadedAt: "desc",
+        },
+    });
+};

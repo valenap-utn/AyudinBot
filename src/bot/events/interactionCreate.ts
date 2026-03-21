@@ -5,6 +5,7 @@ import { configurarCanalCommand } from "../commands/admin/configurarCanal";
 import {subirPdfCommand} from "../commands/admin/subirPdf";
 import {listarPdfsCommand} from "../commands/admin/listarPdfs";
 import {eliminarPdfCommand} from "../commands/admin/eliminarPdf";
+import {buscarPdfCommand} from "../commands/admin/buscarPdf";
 
 // Encargado de manejar los comandos /slash (si se agrega alguno nuevo => lo agrego acá)
 
@@ -15,6 +16,7 @@ const commands = {
     "subir-pdf": subirPdfCommand,
     "listar-pdfs": listarPdfsCommand,
     "eliminar-pdf": eliminarPdfCommand,
+    "buscar-pdf": buscarPdfCommand,
 };
 
 export const interactionEvent = (client: Client) => {

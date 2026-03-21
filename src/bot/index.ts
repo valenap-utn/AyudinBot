@@ -8,6 +8,7 @@ import { configurarCanalCommand} from "./commands/admin/configurarCanal";
 import { subirPdfCommand } from "./commands/admin/subirPdf";
 import {listarPdfsCommand} from "./commands/admin/listarPdfs";
 import {eliminarPdfCommand} from "./commands/admin/eliminarPdf";
+import {buscarPdfCommand} from "./commands/admin/buscarPdf";
 
 /*
     Archivo responsable de exportar:
@@ -38,6 +39,7 @@ export const registerCommands = async () => {
         subirPdfCommand.data.toJSON(),
         listarPdfsCommand.data.toJSON(),
         eliminarPdfCommand.data.toJSON(),
+        buscarPdfCommand.data.toJSON(),
     ];
 
     const rest = new REST({ version: "10" }).setToken(DISCORD_TOKEN);
