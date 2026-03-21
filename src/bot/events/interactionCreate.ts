@@ -2,7 +2,9 @@ import {ChatInputCommandInteraction, Client, Interaction, SlashCommandBuilder} f
 import { pingCommand } from "../commands/ping";
 import { configurarRolCommand } from "../commands/admin/configurarRol";
 import { configurarCanalCommand } from "../commands/admin/configurarCanal";
-import {ingresarPdfCommand} from "../commands/admin/ingresarPdf";
+import {subirPdfCommand} from "../commands/admin/subirPdf";
+import {listarPdfsCommand} from "../commands/admin/listarPdfs";
+import {eliminarPdfCommand} from "../commands/admin/eliminarPdf";
 
 // Encargado de manejar los comandos /slash (si se agrega alguno nuevo => lo agrego acá)
 
@@ -10,7 +12,9 @@ const commands = {
     ping: pingCommand,
     "configurar-rol": configurarRolCommand,
     "configurar-canal": configurarCanalCommand,
-    "ingresar-pdf": ingresarPdfCommand,
+    "subir-pdf": subirPdfCommand,
+    "listar-pdfs": listarPdfsCommand,
+    "eliminar-pdf": eliminarPdfCommand,
 };
 
 export const interactionEvent = (client: Client) => {

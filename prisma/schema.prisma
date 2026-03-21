@@ -27,6 +27,6 @@ model Document {
   originalName          String      // Nombre del pdf
   storedName            String     // Nombre en almacenamiento
   path                  String    // Ruta donde se almacena
-  ulpoadedAt            DateTime  @default(now())
+  uploadedAt            DateTime  @default(now())
   uploadedByUserId      String
 }

@@ -5,7 +5,9 @@ import { config } from "dotenv";
 import { pingCommand } from "./commands/ping";
 import { configurarRolCommand } from "./commands/admin/configurarRol";
 import { configurarCanalCommand} from "./commands/admin/configurarCanal";
-import { ingresarPdfCommand } from "./commands/admin/ingresarPdf";
+import { subirPdfCommand } from "./commands/admin/subirPdf";
+import {listarPdfsCommand} from "./commands/admin/listarPdfs";
+import {eliminarPdfCommand} from "./commands/admin/eliminarPdf";
 
 /*
     Archivo responsable de exportar:
@@ -28,7 +30,16 @@ export const registerCommands = async () => {
     if (!DISCORD_TOKEN || !DISCORD_CLIENT_ID) {
         throw new Error("Faltan DISCORD_TOKEN o DISCORD_CLIENT_ID en las variables de entorno.");
     }
-    const commands = [pingCommand.toJSON(), configurarRolCommand.data.toJSON(), configurarCanalCommand.data.toJSON(),ingresarPdfCommand.data.toJSON()];
+
+    const commands = [
+        pingCommand.toJSON(),
+        configurarRolCommand.data.toJSON(),
+        configurarCanalCommand.data.toJSON(),
+        subirPdfCommand.data.toJSON(),
+        listarPdfsCommand.data.toJSON(),
+        eliminarPdfCommand.data.toJSON(),
+    ];
+
     const rest = new REST({ version: "10" }).setToken(DISCORD_TOKEN);
     try {
         console.log("Registrando comandos slash en el servidor de pruebas...");

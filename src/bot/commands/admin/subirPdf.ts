@@ -6,9 +6,9 @@ import { randomUUID } from 'crypto';
 import { Buffer } from 'buffer';
 import { isAdmin } from "../../../utils/permissions/permissions";
 
-export const ingresarPdfCommand = {
+export const subirPdfCommand = {
     data: new SlashCommandBuilder()
-        .setName('ingresar-pdf')
+        .setName('subir-pdf')
         .setDescription('Sube un PDF al canal de materiales configurado')
         .addAttachmentOption(option =>
             option

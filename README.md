@@ -34,7 +34,9 @@ AyudinBot/
 │   │   │   └── admin/
 │   │   │       ├── configurarRol.ts
 │   │   │       ├── configurarCanal.ts
-│   │   │       └── ingresarPdf.ts
+│   │   │       ├── eliminarPdf.ts
+│   │   │       ├── subirPdf.ts
+│   │   │       └── listarPdfs.ts
 │   │   │
 │   │   ├── events/
 │   │   │   ├── interactionCreate.ts
@@ -82,6 +84,18 @@ AyudinBot/
         * canal de materiales
         * canal de preguntas
 
+* `/subir-pdf`
+
+    * Permite subir archivos PDF como material de estudio dentro del servidor
+
+* `/listar-pdfs`
+
+    * Muestra un listado de los PDFs cargados, incluyendo quién los subió y la fecha de publicación 
+
+* `/eliminar-pdf`
+
+    * Permite eliminar PDFs previamente subidos
+
 ---
 
 ## 🧩 Cómo funciona internamente
@@ -108,7 +122,7 @@ AyudinBot/
 
 ### 🟡 Fase 2 — Gestión de contenido (EN PROGRESO)
 
-* [x] `/ingresar-pdf`
+* [x] `/subir-pdf`
 * [x] Almacenamiento de PDFs
 * [x] Registro de documentos en base de datos
 * [x] Asociación de documentos por servidor
