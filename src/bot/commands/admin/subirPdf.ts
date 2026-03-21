@@ -87,6 +87,6 @@ export const subirPdfCommand = {
         }
 
         // Responder
-        await interaction.reply({ content: `El archivo **${document.originalName}** se ha subido correctamente.`, ephemeral: true });
+        await interaction.reply({ content: `El archivo **${document.originalName}** se ha subido correctamente.`, ephemeral: false });
     },
 };

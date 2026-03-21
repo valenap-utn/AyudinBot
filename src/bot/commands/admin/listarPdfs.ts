@@ -38,6 +38,9 @@ export const listarPdfsCommand = {
         }).join('\n\n');
 
         // Responder con la lista generada
-        await interaction.reply({ content: `Documentos recientes:\n\n${response}`, ephemeral: true });
+        await interaction.reply({
+            content: `Documentos recientes:\n\n${response}`,
+            ephemeral: false
+        });
     },
 };

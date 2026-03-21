@@ -52,7 +52,7 @@ export const eliminarPdfCommand = {
             case "deleted":
                 await interaction.reply({
                     content: `El documento **${archivo}** fue eliminado correctamente.`,
-                    ephemeral: true,
+                    ephemeral: false,
                 });
                 break;
         }

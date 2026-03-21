@@ -55,7 +55,7 @@ export const configurarRolCommand = {
 
             await interaction.reply({
                 content: `Rol administrador configurado correctamente: ${newRole}`,
-                ephemeral: true,
+                ephemeral: false,
             });
         } catch (error) {
             console.error("Error en configurar-rol:", error);

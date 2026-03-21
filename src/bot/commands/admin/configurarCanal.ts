@@ -48,7 +48,7 @@ export const configurarCanalCommand = {
                 await updateMaterialsChannel(interaction.guildId, canal.id);
                 await interaction.reply({
                     content: `Canal de materiales configurado como: ${canal.name}`,
-                    ephemeral: true,
+                    ephemeral: false,
                 });
                 return;
             }
@@ -57,7 +57,7 @@ export const configurarCanalCommand = {
                 await updateQuestionsChannel(interaction.guildId, canal.id);
                 await interaction.reply({
                     content: `Canal de preguntas configurado como: ${canal.name}`,
-                    ephemeral: true,
+                    ephemeral: false,
                 });
             }
         }catch(error) {
