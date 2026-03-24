@@ -71,6 +71,12 @@ AyudinBot/
 ---
 ## 💬 Comandos disponibles
 
+### Públicos
+
+* `/preguntar`
+
+    * A partir de una consulta se obtienen PDFs relevantes que contienen información relacionada
+
 ### Administrador
 
 * `/configurar-rol`
@@ -132,8 +138,8 @@ AyudinBot/
 ### 🟠 Fase 3 — Procesamiento de información
 
 * [x] Extracción de texto de PDFs
-* [ ] Indexación de contenido
-* [ ] Búsqueda por relevancia
+* [x] Indexación de contenido
+* [x] Búsqueda por relevancia
 
 ---
 

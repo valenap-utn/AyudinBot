@@ -6,6 +6,7 @@ import {subirPdfCommand} from "../commands/admin/subirPdf";
 import {listarPdfsCommand} from "../commands/admin/listarPdfs";
 import {eliminarPdfCommand} from "../commands/admin/eliminarPdf";
 import {buscarPdfCommand} from "../commands/admin/buscarPdf";
+import {preguntarCommand} from "../commands/public/preguntar";
 
 // Encargado de manejar los comandos /slash (si se agrega alguno nuevo => lo agrego acá)
 
@@ -17,6 +18,7 @@ const commands = {
     "listar-pdfs": listarPdfsCommand,
     "eliminar-pdf": eliminarPdfCommand,
     "buscar-pdf": buscarPdfCommand,
+    "preguntar": preguntarCommand,
 };
 
 export const interactionEvent = (client: Client) => {
