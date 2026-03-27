@@ -43,11 +43,17 @@ export const interactionEvent = (client: Client) => {
         } catch (error) {
             console.error(`Error ejecutando /${interaction.commandName}:`, error);
 
-            if (!interaction.replied && !interaction.deferred) {
-                await interaction.reply({
-                    content: "Ocurrió un error al ejecutar el comando.",
-                    ephemeral: true,
-                });
+            try{
+                if (interaction.replied || interaction.deferred) {
+                    await interaction.editReply("Ocurrió un error al ejecutar el comando.");
+                } else {
+                    await interaction.reply({
+                        content: 'Ocurrió un error al ejecutar el comando.',
+                        ephemeral: true,
+                    })
+                }
+            }catch (e){
+                console.error('Error enviando respuesta de error:', e);
             }
         }
     });

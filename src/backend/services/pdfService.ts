@@ -205,6 +205,30 @@ function findBestSnippetStart(content: string, queryWords: string[], windowSize 
     return bestIndex;
 }
 
+// Devuelve la oración que mejor matchee
+function findBestSentence(content: string, queryWords: string[]): string | null {
+    const sentences = content.replace(/\n/g, " ")
+        .split(/(?<=[.!?])\s+/)
+        .map(s => s.trim())
+        .filter(s => s.length > 20);
+
+    if(sentences.length === 0) return null;
+
+    let bestSentence: string | null = null;
+    let bestScore = 0;
+
+    for(const sentence of sentences) {
+        const score = calculateScore(sentence, queryWords);
+
+        if(score > bestScore) {
+            bestScore = score;
+            bestSentence = sentence;
+        }
+    }
+
+    return bestScore > 0 ? bestSentence : null;
+}
+
 // Pone en **negrita**
 function highlightSnippet(snippet: string, queryWords: string[]): string {
     let highlighted = snippet;
@@ -219,6 +243,11 @@ function highlightSnippet(snippet: string, queryWords: string[]): string {
 function generateHighlightedSnippet(content: string, queryWords: string[]): string{
     if(!content?.trim()) return "...";
 
+    // Intentamos obtener la oración mas relevante
+    const bestSentence = findBestSentence(content, queryWords);
+    if(bestSentence) return highlightSnippet(bestSentence, queryWords);
+
+    // Fallback => snippet por ventana
     const bestMatchIndex = findBestSnippetStart(content, queryWords);
     const snippetRadius = 60;
 
@@ -243,7 +272,10 @@ function generateHighlightedSnippet(content: string, queryWords: string[]): stri
 export async function searchRelevantDocuments(guildId: string, query: string) {
     const queryWords = processQuery(query);
 
-    if(queryWords.length === 0) return [];
+    if(queryWords.length === 0) return {
+        results: [],
+        totalMatches: 0,
+    };
 
     const documents = await prisma.document.findMany({
         where: {
@@ -276,11 +308,17 @@ export async function searchRelevantDocuments(guildId: string, query: string) {
                 return b.score - a.score;
             }
             return b.uploadedAt.getTime() - a.uploadedAt.getTime();
-        })
-        .slice(0,3);
+        });
+        // .slice(0,3);
 
-    return scoredDocuments.map((doc) => ({
-        originalName: doc.originalName,
-        snippet: doc.snippet,
-    }));
+    const totalMatches = scoredDocuments.length;
+    const top3 = scoredDocuments.slice(0,3);
+
+    return {
+        results: top3.map((doc)=> ({
+            originalName: doc.originalName,
+            snippet: doc.snippet,
+        })),
+        totalMatches,
+    }
 }

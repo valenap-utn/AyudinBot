@@ -35,9 +35,10 @@ export const preguntarCommand = {
                 ephemeral: true,
             });
         }
+
         try {
             // Buscar documentos relevantes
-            const results = await searchRelevantDocuments(interaction.guildId, pregunta);
+            const {results, totalMatches} = await searchRelevantDocuments(interaction.guildId, pregunta);
             if (results.length === 0) {
                 return interaction.reply({
                     content: 'No encontré material relacionado con tu consulta en los documentos cargados.',
@@ -49,12 +50,23 @@ export const preguntarCommand = {
                     (result, index) => `${index + 1}. ${result.originalName}\n${result.snippet}`
                 )
                 .join('\n\n');
+
+            const suffix = totalMatches > 3 ? `\n\n_Mostrando 3 de ${totalMatches} resultados._` : '';
+
+
             return interaction.reply({
-                content: `Encontré material relacionado en:\n\n${response}`,
+                content: `Encontré material relacionado en:\n\n${response}${suffix}`,
                 ephemeral: false,
             });
+
         } catch (error) {
             console.error('Error al procesar /preguntar:', error);
+            if(interaction.replied || interaction.deferred){
+                return interaction.editReply({
+                    content: 'Ocurrió un error al buscar en los documentos. Intenta nuevamente más tarde.',
+                    // ephemeral: true,
+                });
+            }
             return interaction.reply({
                 content: 'Ocurrió un error al buscar en los documentos. Intenta nuevamente más tarde.',
                 ephemeral: true,
@@ -62,3 +74,4 @@ export const preguntarCommand = {
         }
     },
 };
+

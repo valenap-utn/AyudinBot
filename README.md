@@ -75,7 +75,7 @@ AyudinBot/
 
 * `/preguntar`
 
-    * A partir de una consulta se obtienen PDFs relevantes que contienen información relacionada
+    * A partir de una consulta se obtienen respuestas breves/orientativas, indicando de qué PDF se sacó la información
 
 ### Administrador
 
@@ -87,8 +87,8 @@ AyudinBot/
 
     * Permite configurar:
 
-        * canal de materiales
-        * canal de preguntas
+        * Un canal de materiales
+        * Un canal de preguntas
 
 * `/subir-pdf`
 
@@ -143,20 +143,20 @@ AyudinBot/
 
 ---
 
-### 🔵 Fase 4 — IA integrada
+### 🟣 Fase 4 — Mejora de UX
+
+* [x] Respuestas más naturales
+* [ ] Mensajes enriquecidos
+* [ ] Logs y monitoreo
+* [x] Manejo de errores robusto
+
+---
+
+### 🔵 Fase 5 — IA integrada
 
 * [ ] Integración con LLM (OpenAI u otro)
 * [ ] Generación de respuestas basadas en contexto
 * [ ] RAG (Retrieval-Augmented Generation)
-
----
-
-### 🟣 Fase 5 — Mejora de UX
-
-* [ ] Respuestas más naturales
-* [ ] Mensajes enriquecidos
-* [ ] Logs y monitoreo
-* [ ] Manejo de errores robusto
 
 ---
 
@@ -166,7 +166,7 @@ AyudinBot/
 * **Discord.js**
 * **Prisma**
 * **SQLite**
-* (futuro) **OpenAI / IA**
+* (futuro) **OpenAI / IA / DeepSeek**
 
 ---
 

@@ -54,39 +54,51 @@ export const subirPdfCommand = {
             return;
         }
 
-        // Descargar y guardar archivo
-        const response = await fetch(attachment.url);
-        if (!response.ok) {
-            await interaction.reply({ content: 'Hubo un problema al descargar el archivo. Intenta nuevamente.', ephemeral: true });
-            return;
+        await interaction.deferReply({ ephemeral: false });
+        try{
+            // Descargar y guardar archivo
+            const response = await fetch(attachment.url);
+            if (!response.ok) {
+                await interaction.editReply({
+                    content: 'Hubo un problema al descargar el archivo. Intenta nuevamente.',
+                    // ephemeral: true
+                });
+                return;
+            }
+            const arrayBuffer = await response.arrayBuffer();
+            const buffer = Buffer.from(new Uint8Array(arrayBuffer));
+
+            // Generar un nombre único y seguro
+            const storedName = `${randomUUID()}.pdf`;
+            const path = `./storage/pdfs/${storedName}`;
+            fs.mkdirSync('./storage/pdfs', {recursive: true});
+            fs.writeFileSync(path, buffer);
+
+            // Guardar metadata
+            const document = await saveDocument({
+                guildId: guild.id,
+                originalName: attachment.name,
+                storedName,
+                path,
+                uploadedByUserId: user.id,
+            });
+
+            // Extraer texto de PDF y actualizar el contenido del documento
+            try {
+                const extractedText = await extractTextFromPdf(path);
+                await updateDocumentContent(document.id, extractedText);
+            } catch (error) {
+                console.error(`Error al extraer texto del PDF ${document.id}:`, error);
+            }
+
+            // Responder
+            await interaction.editReply({
+                content: `El archivo **${document.originalName}** se ha subido correctamente.`,
+                // ephemeral: false
+            });
+        }catch (e){
+            console.error('Error en /subir-pdf:', e);
+            await interaction.editReply('Ocurrió un error al procesar el PDF. Intenta nuevamente.')
         }
-        const arrayBuffer = await response.arrayBuffer();
-        const buffer = Buffer.from(new Uint8Array(arrayBuffer));
-
-        // Generar un nombre único y seguro
-        const storedName = `${randomUUID()}.pdf`;
-        const path = `./storage/pdfs/${storedName}`;
-        fs.mkdirSync('./storage/pdfs', { recursive: true });
-        fs.writeFileSync(path, buffer);
-
-        // Guardar metadata
-        const document = await saveDocument({
-            guildId: guild.id,
-            originalName: attachment.name,
-            storedName,
-            path,
-            uploadedByUserId: user.id,
-        });
-
-        // Extraer texto de PDF y actualizar el contenido del documento
-        try {
-            const extractedText = await extractTextFromPdf(path);
-            await updateDocumentContent(document.id, extractedText);
-        } catch (error) {
-            console.error(`Error al extraer texto del PDF ${document.id}:`, error);
-        }
-
-        // Responder
-        await interaction.reply({ content: `El archivo **${document.originalName}** se ha subido correctamente.`, ephemeral: false });
-    },
+    }
 };
