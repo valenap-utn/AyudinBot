@@ -75,3 +75,39 @@ export const preguntarCommand = {
     },
 };
 
+// ---------- Funciones auxiliares ----------
+
+function truncateWithEllipsis(text: string, maxLength: number): string{
+    if(maxLength <= 0) return '';
+    if(text.length <= maxLength) return text;
+    if(maxLength <= 3) return '.'.repeat(maxLength);
+
+    return `${text.slice(0, maxLength - 3).trimEnd()}...`;
+}
+
+function buildPreguntarResponse(results: {originalName: string, snippet: string}[], totalMatches: number): string {
+    const maxLength = 2000;
+    const header = 'Encontré material relacionado en:\n\n';
+    const suffix = totalMatches > 3 ? `\n\n Mostrando ${results.length} de ${totalMatches} resultados._` : '';
+    let message = header;
+
+    for(let i = 0; i < results.length; i++){
+        const result = results[i]!;
+        const blockPrefix = i > 0 ? '\n\n' : '';
+        const block = `${blockPrefix}${i+1}. ${result.originalName}\n${result.snippet}`;
+
+        // Si entra completo junto con el suffix, lo agregamos entero
+        if((message + block + suffix).length <= maxLength){
+            message += block;
+            continue;
+        }
+
+        // Si no entra completo, intentamos meter lo máximo posible de este bloque
+        const remaining = maxLength - message.length - suffix.length;
+        if(remaining > 0){
+            message += truncateWithEllipsis(block,remaining);
+        }
+        break;
+    }
+    return message + suffix;
+}
