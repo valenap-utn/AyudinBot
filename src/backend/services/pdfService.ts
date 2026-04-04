@@ -13,21 +13,62 @@ export interface DocumentMetadata {
     uploadedByUserId: string;
 }
 
-export const saveDocument = async (data: DocumentMetadata) => {
-    return prisma.document.create({ data });
+export const saveDocument = async (data: DocumentMetadata): Promise<DocumentMetadata & { id: string}> => {
+    const source = await prisma.knowledgeSource.create({
+        data:{
+            guildId: data.guildId,
+            title: data.originalName,
+            storageKey: data.storedName,
+            filePath: data.path,
+            sourceType: "PDF",
+            reliability: "MEDIUM",
+            priority: 100,
+            isActive: true,
+            uploadedByUserId: data.uploadedByUserId,
+        },
+    });
+
+    return {
+        id: source.id,
+        guildId: source.guildId,
+        originalName: source.title,
+        storedName: source.storageKey || "",
+        path: source.filePath || "",
+        uploadedAt: source.createdAt,
+        uploadedByUserId: source.uploadedByUserId || "",
+    };
 };
 
 export const getDocumentsByGuild = async (guildId: string) => {
-    return prisma.document.findMany({ where: { guildId } });
+    return prisma.knowledgeSource.findMany({
+        where: {
+            guildId,
+            sourceType: "PDF",
+            isActive: true,
+        },
+    });
 };
 
 // Obtiene los últimos 10 documentos ordenados por uploadedAt DESC
 export const getRecentDocumentsByGuild = async (guildId: string, limit: number): Promise<DocumentMetadata[]> => {
-    return prisma.document.findMany({
-        where: { guildId },
-        orderBy: { uploadedAt: "desc" },
+    const sources = await prisma.knowledgeSource.findMany({
+        where: {
+            guildId,
+            sourceType: "PDF",
+            isActive: true,
+        },
+        orderBy:{ createdAt: "desc" },
         take: limit,
     });
+
+    return sources.map((source) => ({
+        guildId: source.guildId,
+        originalName: source.title,
+        storedName: source.storageKey || "",
+        path: source.filePath || "",
+        uploadedAt: source.createdAt,
+        uploadedByUserId: source.uploadedByUserId || "",
+    }));
 };
 
 // Eliminar un documento específico por guildId y originalName
@@ -36,8 +77,13 @@ export const deleteDocumentByName = async (
     originalName: string
 ): Promise<"not_found" | "duplicated" | "deleted"> => {
 
-    const documents = await prisma.document.findMany({
-        where: { guildId, originalName },
+    const documents = await prisma.knowledgeSource.findMany({
+        where: {
+            guildId,
+            title: originalName,
+            sourceType: "PDF",
+            isActive: true,
+        },
     });
 
     if (documents.length === 0) {
@@ -52,19 +98,19 @@ export const deleteDocumentByName = async (
 
     // Eliminar archivo físico
     // @ts-ignore
-    const filePath = path.join(__dirname, "../../../storage/pdfs", document.storedName);
+    const filePath = path.join(__dirname, "../../../storage/pdfs", document.storageKey || "");
     if (fs.existsSync(filePath)) {
         try {
             fs.unlinkSync(filePath);
         } catch (err) {
             // @ts-ignore
-            console.error(`Error al eliminar archivo físico: ${document.storedName}`, err);
+            console.error(`Error al eliminar archivo físico: ${document.storageKey}`, err);
         }
     }
 
     // Eliminar registro en la base de datos
     // @ts-ignore
-    await prisma.document.delete({ where: { id: document.id } });
+    await prisma.knowledgeSource.delete({ where: { id: document.id } });
 
     return "deleted"; // Eliminación exitosa
 };
@@ -72,9 +118,9 @@ export const deleteDocumentByName = async (
 // Actualiza el contenido de un Documento en la base de datos
 export const updateDocumentContent = async (documentId: string, content: string) => {
     try {
-        return await prisma.document.update({
+        return await prisma.knowledgeSource.update({
             where: { id: documentId },
-            data: { content },
+            data: { extractedText: content },
         });
     } catch (error) {
         console.error(`Error al actualizar contenido del documento con ID ${documentId}`, error);
@@ -84,19 +130,21 @@ export const updateDocumentContent = async (documentId: string, content: string)
 
 // Busca documentos por contenido textual en base al guildId
 export const searchDocumentsByContent = async (guildId: string, searchTerm: string) => {
-    return prisma.document.findMany({
+    return prisma.knowledgeSource.findMany({
         where: {
             guildId,
-            content: {
+            sourceType: "PDF",
+            isActive: true,
+            extractedText: {
                 contains: searchTerm,
             },
         },
         select: {
-            originalName: true,
+            title: true,
         },
         take: 10,
         orderBy: {
-            uploadedAt: "desc",
+            createdAt: "desc",
         },
     });
 };
@@ -277,27 +325,29 @@ export async function searchRelevantDocuments(guildId: string, query: string) {
         totalMatches: 0,
     };
 
-    const documents = await prisma.document.findMany({
+    const documents = await prisma.knowledgeSource.findMany({
         where: {
             guildId,
-            content: {
+            sourceType: "PDF",
+            isActive: true,
+            extractedText: {
                 not: null,
             },
         },
         select: {
-            originalName: true,
-            content: true,
-            uploadedAt: true,
+            title: true,
+            extractedText: true,
+            createdAt: true,
         },
     });
 
     const scoredDocuments = documents.map((doc)=>{
-        const content = doc.content ?? "";
+        const content = doc.extractedText ?? "";
         const score = calculateScore(content, queryWords);
 
         return {
-            originalName: doc.originalName,
-            uploadedAt: doc.uploadedAt,
+            originalName: doc.title,
+            uploadedAt: doc.createdAt,
             score,
             snippet: generateHighlightedSnippet(content, queryWords),
         };

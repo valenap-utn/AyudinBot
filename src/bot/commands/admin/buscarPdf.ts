@@ -51,7 +51,7 @@ export const buscarPdfCommand = {
 
             // Formatear resultados en lista
             const results = documents
-                .map((doc, index) => `${index + 1}. ${doc.originalName}`)
+                .map((doc, index) => `${index + 1}. ${doc.title}`)
                 .join("\n");
 
             // Enviar resultados al usuario
