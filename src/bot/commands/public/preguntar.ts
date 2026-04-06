@@ -1,6 +1,7 @@
 import {ChatInputCommandInteraction, SlashCommandBuilder} from "discord.js";
 import {getGuildConfig} from "../../../backend/services/guildService";
 import {searchService} from "../../../backend/services/searchService";
+import {buildPreguntarResponse} from "../../../utils/preguntarFormatter";
 
 export const preguntarCommand = {
     data: new SlashCommandBuilder()
@@ -49,20 +50,12 @@ export const preguntarCommand = {
                     ephemeral: false,
                 });
             }
-            const response = results
-                .slice(0,3)
-                .map(
-                    (result, index) => `${index + 1}. ${result.title}\n${result.snippet}`
-                )
-                .join('\n\n');
-
-            const suffix = totalMatches > 3 ? `\n\n_Mostrando 3 de ${totalMatches} resultados._` : '';
-
+            const response = buildPreguntarResponse(results, totalMatches, pregunta);
 
             return interaction.reply({
-                content: `Encontré material relacionado en:\n\n${response}${suffix}`,
+                content: response,
                 ephemeral: false,
-            });
+            })
 
         } catch (error) {
             console.error('Error al procesar /preguntar:', error);
@@ -79,40 +72,3 @@ export const preguntarCommand = {
         }
     },
 };
-
-// ---------- Funciones auxiliares ----------
-
-function truncateWithEllipsis(text: string, maxLength: number): string{
-    if(maxLength <= 0) return '';
-    if(text.length <= maxLength) return text;
-    if(maxLength <= 3) return '.'.repeat(maxLength);
-
-    return `${text.slice(0, maxLength - 3).trimEnd()}...`;
-}
-
-function buildPreguntarResponse(results: {originalName: string, snippet: string}[], totalMatches: number): string {
-    const maxLength = 2000;
-    const header = 'Encontré material relacionado en:\n\n';
-    const suffix = totalMatches > 3 ? `\n\n Mostrando ${results.length} de ${totalMatches} resultados._` : '';
-    let message = header;
-
-    for(let i = 0; i < results.length; i++){
-        const result = results[i]!;
-        const blockPrefix = i > 0 ? '\n\n' : '';
-        const block = `${blockPrefix}${i+1}. ${result.originalName}\n${result.snippet}`;
-
-        // Si entra completo junto con el suffix, lo agregamos entero
-        if((message + block + suffix).length <= maxLength){
-            message += block;
-            continue;
-        }
-
-        // Si no entra completo, intentamos meter lo máximo posible de este bloque
-        const remaining = maxLength - message.length - suffix.length;
-        if(remaining > 0){
-            message += truncateWithEllipsis(block,remaining);
-        }
-        break;
-    }
-    return message + suffix;
-}
