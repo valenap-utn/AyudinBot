@@ -1,5 +1,6 @@
 // Tipos de fuente soportadas en la busqueda
 export type SourceType = 'pdf' | 'github';
+export type QuestionCategory = 'TP' | 'ADMINISTRATIVA' | 'TEORIA'
 
 export interface SearchResult {
     sourceType: SourceType;
@@ -15,6 +16,7 @@ export interface SearchResult {
 export interface SearchQuery {
     guildId: string;
     query: string; // texto de busqueda del usuario
+    questionCategory?: QuestionCategory;
 }
 
 // Rta. estandar de busqueda

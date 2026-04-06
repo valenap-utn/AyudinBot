@@ -42,6 +42,8 @@ model KnowledgeSource {
   externalSourceKey   String?
   metadataJson        String?
 
+  questionCategory    QuestionCategory?
+
   uploadedByUserId    String?
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
@@ -50,6 +52,7 @@ model KnowledgeSource {
   @@index([guildId, sourceType])
   @@index([guildId, isActive])
   @@index([guildId, sourceType, isActive])
+  @@index([guildId, sourceType, questionCategory])
 
   @@unique([guildId, externalSourceKey])
 }
@@ -59,6 +62,12 @@ enum KnowledgeSourceType {
   URL
   TEXT
   GITHUB_ISSUES
+}
+
+enum QuestionCategory{
+  TP
+  ADMINISTRATIVA
+  TEORIA
 }
 
 enum SourceReliability {

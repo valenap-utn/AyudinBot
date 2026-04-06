@@ -105,7 +105,7 @@ export async function syncGithubIssues(options: SyncOptions): Promise<SyncResult
                             extractedText,
                             metadataJson,
                             isActive: true,
-                            // updatedAt: new Date(),
+                            questionCategory: "TP",
                         },
                     });
                     stats.updated++;
@@ -121,6 +121,7 @@ export async function syncGithubIssues(options: SyncOptions): Promise<SyncResult
                             reliability: "MEDIUM",
                             priority: 100,
                             isActive: true,
+                            questionCategory: "TP",
                         },
                     });
                     stats.added++;
