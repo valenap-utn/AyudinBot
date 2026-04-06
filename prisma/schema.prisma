@@ -39,6 +39,9 @@ model KnowledgeSource {
   priority            Int                   @default(100)
   isActive            Boolean               @default(true) //permite desactivar sin borrar
 
+  externalSourceKey   String?
+  metadataJson        String?
+
   uploadedByUserId    String?
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
@@ -46,10 +49,16 @@ model KnowledgeSource {
   @@index([guildId])
   @@index([guildId, sourceType])
   @@index([guildId, isActive])
+  @@index([guildId, sourceType, isActive])
+
+  @@unique([guildId, externalSourceKey])
 }
 
 enum KnowledgeSourceType {
   PDF
+  URL
+  TEXT
+  GITHUB_ISSUES
 }
 
 enum SourceReliability {

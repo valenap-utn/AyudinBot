@@ -1,6 +1,6 @@
 import {ChatInputCommandInteraction, SlashCommandBuilder} from "discord.js";
-import {searchRelevantDocuments} from "../../../backend/services/pdfService";
 import {getGuildConfig} from "../../../backend/services/guildService";
+import {searchService} from "../../../backend/services/searchService";
 
 export const preguntarCommand = {
     data: new SlashCommandBuilder()
@@ -38,7 +38,11 @@ export const preguntarCommand = {
 
         try {
             // Buscar documentos relevantes
-            const {results, totalMatches} = await searchRelevantDocuments(interaction.guildId, pregunta);
+            const {results, totalMatches} = await searchService.search({
+                guildId: interaction.guildId,
+                query: pregunta,
+            });
+
             if (results.length === 0) {
                 return interaction.reply({
                     content: 'No encontré material relacionado con tu consulta en los documentos cargados.',
@@ -46,8 +50,9 @@ export const preguntarCommand = {
                 });
             }
             const response = results
+                .slice(0,3)
                 .map(
-                    (result, index) => `${index + 1}. ${result.originalName}\n${result.snippet}`
+                    (result, index) => `${index + 1}. ${result.title}\n${result.snippet}`
                 )
                 .join('\n\n');
 
