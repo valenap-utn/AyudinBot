@@ -335,6 +335,7 @@ export async function searchRelevantDocuments(guildId: string, query: string) {
             },
         },
         select: {
+            id: true,
             title: true,
             extractedText: true,
             createdAt: true,
@@ -346,6 +347,7 @@ export async function searchRelevantDocuments(guildId: string, query: string) {
         const score = calculateScore(content, queryWords);
 
         return {
+            id: doc.id,
             originalName: doc.title,
             uploadedAt: doc.createdAt,
             score,
@@ -366,8 +368,10 @@ export async function searchRelevantDocuments(guildId: string, query: string) {
 
     return {
         results: top3.map((doc)=> ({
+            id: doc.id,
             originalName: doc.originalName,
             snippet: doc.snippet,
+            score: doc.score,
         })),
         totalMatches,
     }
