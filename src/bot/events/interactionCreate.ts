@@ -7,6 +7,7 @@ import {listarPdfsCommand} from "../commands/admin/listarPdfs";
 import {eliminarPdfCommand} from "../commands/admin/eliminarPdf";
 import {buscarPdfCommand} from "../commands/admin/buscarPdf";
 import {preguntarCommand} from "../commands/public/preguntar";
+import {configurarForoCommand} from "../commands/admin/configurarForo";
 
 // Encargado de manejar los comandos /slash (si se agrega alguno nuevo => lo agrego acá)
 
@@ -19,6 +20,7 @@ const commands = {
     "eliminar-pdf": eliminarPdfCommand,
     "buscar-pdf": buscarPdfCommand,
     "preguntar": preguntarCommand,
+    "configurar-foro": configurarForoCommand,
 };
 
 export const interactionEvent = (client: Client) => {
