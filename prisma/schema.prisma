@@ -75,3 +75,16 @@ enum SourceReliability {
   MEDIUM
   HIGH
 }
+
+model SearchLog {
+  id                String  @id @default(cuid())
+  guildId           String
+  query             String
+  questionCategory  QuestionCategory?
+  resultsReturned   Int
+  totalMatches      Int
+  createdAt         DateTime @default(now())
+
+  @@index([guildId])
+  @@index([createdAt])
+}

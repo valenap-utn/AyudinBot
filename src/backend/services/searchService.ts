@@ -2,6 +2,7 @@ import { SearchAdapter, SearchQuery, SearchResponse } from "../../types/search";
 import {pdfSearchAdapter} from "./adapters/pdfSearchAdapter";
 import {githubIssuesSearchAdapter} from "./adapters/githubIssuesSearchAdapter";
 import type { SourceType, QuestionCategory } from "../../types/search";
+import {prisma} from "../../database/prisma/client";
 
 const SOURCE_BOOST: Record<QuestionCategory, Record<SourceType, number>> = {
     TP: {github:2, pdf: 1},
@@ -54,6 +55,19 @@ class SearchService {
         const totalMatches = responses.reduce((sum,r) =>
             sum + r.totalMatches, 0
         );
+
+        // Logging de la busqueda
+        prisma.searchLog.create({
+            data:{
+                guildId: query.guildId,
+                query: query.query,
+                resultsReturned: results.length,
+                totalMatches: totalMatches,
+                ...(query.questionCategory !== undefined
+                    ? { questionCategory: query.questionCategory }
+                    : {}),
+            },
+        }).catch(e => console.error("Error al guardar SearchLog: ", e));
 
         return { results, totalMatches };
     }
