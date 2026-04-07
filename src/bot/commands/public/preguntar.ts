@@ -2,6 +2,7 @@ import {ChatInputCommandInteraction, SlashCommandBuilder} from "discord.js";
 import {getGuildConfig} from "../../../backend/services/guildService";
 import {searchService} from "../../../backend/services/searchService";
 import {buildPreguntarResponse} from "../../../utils/preguntarFormatter";
+import {QuestionCategory} from "../../../types/search";
 
 export const preguntarCommand = {
     data: new SlashCommandBuilder()
@@ -12,7 +13,18 @@ export const preguntarCommand = {
                 .setName('pregunta')
                 .setDescription('Pregunta que deseas realizar.')
                 .setRequired(true)
+        )
+        .addStringOption((option) =>
+            option
+                .setName('tipo')
+                .setDescription('Tipo de pregunta')
+                .addChoices(
+                    {name: 'TP', value:'TP'},
+                    {name:'Administrativa', value:'ADMINISTRATIVA'},
+                    {name: 'Teoria', value:'TEORIA'},
+                )
         ),
+
     async execute(interaction: ChatInputCommandInteraction) {
         if (!interaction.guildId) {
             return interaction.reply({
@@ -21,6 +33,7 @@ export const preguntarCommand = {
             });
         }
         const pregunta = interaction.options.getString('pregunta', true);
+        const tipo = interaction.options.getString('tipo') as QuestionCategory | null;
 
         // Validar canal de preguntas
         const guildConfig = await getGuildConfig(interaction.guildId);
@@ -42,11 +55,13 @@ export const preguntarCommand = {
             const {results, totalMatches} = await searchService.search({
                 guildId: interaction.guildId,
                 query: pregunta,
+                ...(tipo !== null ? { questionCategory: tipo } : {}),
             });
 
             if (results.length === 0) {
+                const noResultsMessage = getNoResultsMessage(tipo);
                 return interaction.reply({
-                    content: 'No encontré material relacionado con tu consulta en los documentos cargados.',
+                    content: noResultsMessage,
                     ephemeral: false,
                 });
             }
@@ -72,3 +87,16 @@ export const preguntarCommand = {
         }
     },
 };
+
+function getNoResultsMessage(tipo: QuestionCategory | null): string {
+    switch (tipo) {
+        case 'TP':
+            return "No encontré resultados relacionados en fuentes del TP.";
+        case 'ADMINISTRATIVA':
+            return "No encontré información administratica relacionada."
+        case 'TEORIA':
+            return "No encontré material teórico relacionado."
+        default:
+            return "No encontré material relacionado con tu consulta en los documentos cargados.";
+    }
+}

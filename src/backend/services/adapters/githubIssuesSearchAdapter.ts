@@ -1,7 +1,7 @@
 import {SearchAdapter, SearchResponse, SearchResult} from "../../../types/search";
 import {prisma} from "../../../database/prisma/client";
 
-// TODO: refactor para funciones ( revisar pdfService.ts )
+// TODO: refactor para funciones ( revisar pdfSearchAdapter.ts , para poner funciones dup en algun /utils )
 
 const STOP_WORDS = [
     "que", "de", "la", "el", "los", "las", "y", "o", "un", "una",
@@ -49,18 +49,24 @@ function generateSnippet(content: string, queryWords: string[]): string {
 }
 export const githubIssuesSearchAdapter: SearchAdapter = {
     sourceType: 'github',
-    async search({ guildId, query }): Promise<SearchResponse> {
+    async search({ guildId, query, questionCategory }): Promise<SearchResponse> {
         const queryWords = processQuery(query);
         if (queryWords.length === 0) {
             return { results: [], totalMatches: 0 };
         }
+
+        const where: any = {
+            guildId,
+            sourceType: 'GITHUB_ISSUES',
+            isActive: true,
+            extractedText: {not: null}
+        }
+        if(questionCategory) {
+            where.questionCategory = questionCategory;
+        }
+
         const documents = await prisma.knowledgeSource.findMany({
-            where: {
-                guildId,
-                sourceType: 'GITHUB_ISSUES',
-                isActive: true,
-                extractedText: { not: null },
-            },
+            where,
             select: {
                 id: true,
                 title: true,
@@ -69,6 +75,7 @@ export const githubIssuesSearchAdapter: SearchAdapter = {
                 createdAt: true,
             },
         });
+
         // 1. Filtrar por score > 0
         const scored = documents
             .map(doc => {
