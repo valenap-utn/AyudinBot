@@ -16,6 +16,17 @@ export const subirPdfCommand = {
                 .setName('archivo')
                 .setDescription('El archivo PDF que quieres subir')
                 .setRequired(true)
+        )
+        .addStringOption(option =>
+        option
+            .setName('categoria')
+            .setDescription('Categoria de la fuente')
+            .addChoices(
+                { name: 'TP', value: 'TP'},
+                { name: 'Administrativo', value: 'ADMINISTRATIVA'},
+                { name: 'Teoria', value: 'TEORIA'}
+            )
+            .setRequired(true)
         ),
     async execute(interaction: ChatInputCommandInteraction) {
         const { guild, channel, options, user } = interaction;
@@ -54,6 +65,8 @@ export const subirPdfCommand = {
             return;
         }
 
+        const categoria = options.getString('categoria') as 'TP' | 'ADMINISTRATIVA' | 'TEORIA';
+
         await interaction.deferReply({ ephemeral: false });
         try{
             // Descargar y guardar archivo
@@ -81,6 +94,7 @@ export const subirPdfCommand = {
                 storedName,
                 path,
                 uploadedByUserId: user.id,
+                questionCategory: categoria,
             });
 
             // Extraer texto de PDF y actualizar el contenido del documento

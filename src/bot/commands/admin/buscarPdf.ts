@@ -5,7 +5,7 @@ import { searchDocumentsByContent } from "../../../backend/services/pdfService";
 export const buscarPdfCommand = {
     data: new SlashCommandBuilder()
         .setName("buscar-pdf")
-        .setDescription("[INTERNAL TESTING] Busca un texto dentro de los documentos PDF almacenados.")
+        .setDescription("Busca un texto dentro de los documentos PDF almacenados.")
         .addStringOption((option) =>
             option
                 .setName("texto")
@@ -51,7 +51,7 @@ export const buscarPdfCommand = {
 
             // Formatear resultados en lista
             const results = documents
-                .map((doc, index) => `${index + 1}. ${doc.originalName}`)
+                .map((doc, index) => `${index + 1}. ${doc.title}`)
                 .join("\n");
 
             // Enviar resultados al usuario

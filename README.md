@@ -102,6 +102,12 @@ AyudinBot/
 
     * Permite eliminar PDFs previamente subidos
 
+* `/configurar-foro`
+
+    * Permite conectar un repositorio de GitHub como fuente de información para responder consultas
+    * **Formato:** `owner/repositorio`
+    * **Ejemplo:** `/configurar-foro sisoputnfrba/foro`
+
 ---
 
 ## 🧩 Cómo funciona internamente
