@@ -65,7 +65,7 @@ export const preguntarCommand = {
                     ephemeral: false,
                 });
             }
-            const response = buildPreguntarResponse(results, totalMatches, pregunta);
+            const response = buildPreguntarResponse(results, totalMatches, pregunta, tipo || undefined);
 
             return interaction.reply({
                 content: response,

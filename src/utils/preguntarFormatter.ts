@@ -1,9 +1,9 @@
-import {SearchResult} from "../types/search";
+import {QuestionCategory, SearchResult, SourceType} from "../types/search";
 
 const MAX_MESSAGE_LENGTH = 2000;
 const SNIPPET_MAX_LENGTH = 150;
 
-const SOURCE_BADGES: Record<string, string> = {
+const SOURCE_BADGES: Record<SourceType, string> = {
     pdf: "📄PDF",
     github: "🧵Foro",
 };
@@ -13,7 +13,7 @@ function truncate(text:string, max: number) {
     return text.slice(0, max - 3).trimEnd() + "...";
 }
 
-function formatSourceBadge(sourceType: string): string {
+function formatSourceBadge(sourceType: SourceType): string {
     return SOURCE_BADGES[sourceType] || "📄Fuente";
 }
 
@@ -46,7 +46,7 @@ function formatGithubMetadata(result: SearchResult): string {
     return parts.length > 0 ? "\n" + parts.join(" ") : "";
 }
 
-export function formatSearchResult(result: SearchResult, index: number): string {
+export function formatSearchResult(result: SearchResult, index: number, questionCategory?: QuestionCategory): string {
     const badge = formatSourceBadge(result.sourceType);
     const snippet = truncate(result.snippet, SNIPPET_MAX_LENGTH);
     const githubMeta = result.sourceType === 'github'
@@ -56,7 +56,7 @@ export function formatSearchResult(result: SearchResult, index: number): string 
     return `${index + 1}. ${badge}\n**${result.title}**${githubMeta}\n> ${snippet}`;
 }
 
-export function buildPreguntarResponse(results: SearchResult[], totalMatches: number, query: string): string{
+export function buildPreguntarResponse(results: SearchResult[], totalMatches: number, query: string, questionCategory?: QuestionCategory): string{
     const limit = 3;
     const displayResults = results.slice(0,limit);
 

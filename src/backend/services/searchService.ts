@@ -1,6 +1,18 @@
 import { SearchAdapter, SearchQuery, SearchResponse } from "../../types/search";
 import {pdfSearchAdapter} from "./adapters/pdfSearchAdapter";
 import {githubIssuesSearchAdapter} from "./adapters/githubIssuesSearchAdapter";
+import type { SourceType, QuestionCategory } from "../../types/search";
+
+const SOURCE_BOOST: Record<QuestionCategory, Record<SourceType, number>> = {
+    TP: {github:2, pdf: 1},
+    TEORIA: {pdf: 2, github: 1},
+    ADMINISTRATIVA: {pdf: 2, github: 1},
+};
+
+function calculateBoost(sourceType: SourceType, questionCategory?: QuestionCategory): number {
+    if(!questionCategory) return 0;
+    return SOURCE_BOOST[questionCategory]?.[sourceType] ?? 0;
+}
 
 class SearchService {
     private adapters: SearchAdapter[] = []; // Lista de fuentes registradas
@@ -29,7 +41,13 @@ class SearchService {
 
         const results = responses
             .flatMap(result => result.results)
-            .sort((a, b) => b.score - a.score)
+            .sort((a, b) => {
+                const boostA = calculateBoost(a.sourceType, query.questionCategory);
+                const boostB = calculateBoost(b.sourceType, query.questionCategory);
+                const scoreA = a.score + boostA;
+                const scoreB = b.score + boostB;
+                return scoreB - scoreA;
+            })
             .slice(0, 5);
 
         // une todos los resultados y los ordena por score
