@@ -3,6 +3,7 @@ import {getGuildConfig} from "../../../backend/services/guildService";
 import {searchService} from "../../../backend/services/searchService";
 import {buildPreguntarResponse} from "../../../utils/preguntarFormatter";
 import {QuestionCategory} from "../../../types/search";
+import {searchFaqs} from "../../../backend/services/faqService";
 
 export const preguntarCommand = {
     data: new SlashCommandBuilder()
@@ -34,6 +35,17 @@ export const preguntarCommand = {
         }
         const pregunta = interaction.options.getString('pregunta', true);
         const tipo = interaction.options.getString('tipo') as QuestionCategory | null;
+
+        if(interaction.guildId){
+            const faqMatch = await searchFaqs(interaction.guildId, pregunta);
+
+            if(faqMatch){
+                return interaction.reply({
+                    content: `📋 **${faqMatch.titulo}**\n${faqMatch.contenido}`,
+                    ephemeral: false,
+                });
+            }
+        }
 
         // Validar canal de preguntas
         const guildConfig = await getGuildConfig(interaction.guildId);

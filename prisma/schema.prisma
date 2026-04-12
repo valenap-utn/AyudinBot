@@ -10,7 +10,7 @@ generator client {
 datasource db {
   provider = "sqlite"
 }
-
+// -------------------- CONFIG SERVERS --------------------
 model GuildConfig {
   id                 String   @id @default(cuid())
   guildId            String   @unique
@@ -23,6 +23,7 @@ model GuildConfig {
   knowledgeSources   KnowledgeSource[]
 }
 
+// -------------------- ARCHIVOS --------------------
 // Document => KnowledgeSource
 model KnowledgeSource {
   id                  String   @id @default(cuid())
@@ -75,6 +76,32 @@ enum SourceReliability {
   MEDIUM
   HIGH
 }
+
+// -------------------- FAQs --------------------
+
+enum FaqType {
+  FECHAS_PARCIALES
+  FECHAS_CHECKPOINT
+  LINKS_IMPORTANTES
+  INFO_TP
+  CUSTOM
+}
+
+model Faq {
+  id          String  @id @default(cuid())
+  guildId     String
+  tipo        FaqType
+  titulo      String
+  contenido   String
+  dataJson    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([guildId])
+  @@index([guildId, tipo])
+}
+
+// -------------------- LOGS --------------------
 
 model SearchLog {
   id                String  @id @default(cuid())
